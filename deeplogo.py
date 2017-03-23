@@ -170,7 +170,7 @@ class DeepLogo():
         sp.call(cmd2,shell=True)
         sys.stdout.write("Saved it at " + outputfile +"\n")
         
-        frames = sorted(glob.glob("tmp/tmp_1_1/*"))[10:-10]
+        frames = sorted(glob.glob("tmp/tmp_1_1/*"))[5:-5]
         x_mean = 0.39533365588770686
         
         imgs = []
