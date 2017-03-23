@@ -105,11 +105,11 @@ def get_brand_2(results):
     print np.max(results)
     if v1 == v2:
         return reversed_dict[v1]
-    if v1 == 4 and v2 != 4:
+    elif v1 == 4 and v2 != 4:
         return reversed_dict[v2]
-    if v1 !=4 and v2 ==4:
+    elif v1 !=4 and v2 ==4:
         return reversed_dict[v1]
-    if v1==4 and v2==4:
+    else:
         return reversed_dict[v1]
 
 
