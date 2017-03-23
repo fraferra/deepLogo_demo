@@ -27,6 +27,7 @@ def upload_file():
     brand = "https://www.shareicon.net/data/256x256/2015/10/02/110418_question_512x512.png"
     if request.method == 'POST':
         text = request.form['text']
+        print text
         if len(text) > 4:
         #brand = text
 	        brand = dl.predict(text)
