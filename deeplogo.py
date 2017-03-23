@@ -35,8 +35,8 @@ import sys
 import glob
 from pytube import YouTube
 import pytube
-max_frames = 5
-number_of_brands = 5
+max_frames = 15
+number_of_brands = 6
 
 
 def getModel2( output_dim ):
@@ -81,7 +81,7 @@ def load_model(weights_path, output_dim):
     return model
 
 
-labels_dict = {'apple': 2, 'cocacola': 0, 'nike': 4, 'pepsi': 1, 'starbucks': 3}
+labels_dict = {'apple': 2, 'cocacola': 0, 'nike': 4, 'pepsi': 1, 'starbucks': 3, "noise":5}
 reversed_dict = dict([(x[1],x[0]) for x in labels_dict.items()])
 
 def get_brand(softmaxes):
@@ -105,20 +105,31 @@ def load_rnn_model(weights, cnn):
     model_rnn3=Sequential()
 
     model_rnn3.add(TimeDistributed(cnn, input_shape=(max_frames,224,224,3)))
+#     model_rnn3.add(GRU(output_dim=100,return_sequences=True))
+#     model_rnn3.add(GRU(output_dim=50,return_sequences=False))
+#     model_rnn3.add(Dropout(.2))
+#     model_rnn3.add(Dense(number_of_brands,activation='softmax'))
+#     model_rnn3.load_weights(weights)
+
+#     model_rnn3.compile(optimizer='adam', loss='categorical_crossentropy',metrics=['accuracy', 'categorical_crossentropy'])
+
+
+    model_rnn3.add(GRU(output_dim=200,return_sequences=True))
     model_rnn3.add(GRU(output_dim=100,return_sequences=True))
     model_rnn3.add(GRU(output_dim=50,return_sequences=False))
     model_rnn3.add(Dropout(.2))
     model_rnn3.add(Dense(number_of_brands,activation='softmax'))
-    model_rnn3.load_weights(weights)
+    model_rnn3.compile(optimizer='Nadam', loss='categorical_crossentropy',metrics=['accuracy', 'categorical_crossentropy'])
 
-    model_rnn3.compile(optimizer='adam', loss='categorical_crossentropy',metrics=['accuracy', 'categorical_crossentropy'])
 
+
+    
     return model_rnn3
 
 class DeepLogo():
     def __init__(self):
-        self.trained_model = load_model("weights-improvement-VGG16-LOGO5-04-0.9940.hdf5", 5)
-        self.rnn_model = load_rnn_model("RNN-05-0.8704.hdf5", self.trained_model)
+        self.trained_model = load_model("weights-improvement-VGG16-LOGO6-07-0.9922.hdf5", 6)
+        self.rnn_model = load_rnn_model("RNN2-02-0.5091.hdf5", self.trained_model)
         
 
     def predict(self, url):
@@ -148,7 +159,6 @@ class DeepLogo():
         sys.stdout.write("Saved it at " + outputfile +"\n")
         
         frames = sorted(glob.glob("tmp/tmp_1_1/*"))
-        print frames
         x_mean = 0.39533365588770686
         
         imgs = []
@@ -187,6 +197,4 @@ class DeepLogo():
             brand =  b1
         else:
             brand = "Noise"
-        print b1,b2
         return b2
-
