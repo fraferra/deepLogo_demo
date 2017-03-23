@@ -15,7 +15,7 @@ def upload_file():
     brand = "NOT CLASSIFIED YET"
     if request.method == 'POST':
         text = request.form['text']
-        brand = text
+        #brand = text
         brand = dl.predict(text)
 
     return render_template('index.html', brand=brand)

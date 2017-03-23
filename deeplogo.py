@@ -187,5 +187,6 @@ class DeepLogo():
             brand =  b1
         else:
             brand = "Noise"
+        print b1,b2
         return b2
 
