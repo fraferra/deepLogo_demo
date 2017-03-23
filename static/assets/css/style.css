@@ -126,6 +126,7 @@ input {
 	margin-bottom: 10px;
 	background-color: #fff;
 	opacity: 0.9;
+	color:#5a5a5a;
 	-webkit-transition: background-color 0.2s;
 	transition: background-color 0.2s;
 }
