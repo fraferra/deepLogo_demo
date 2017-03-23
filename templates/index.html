@@ -1,12 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+<style type="text/css">
+    body {
+    background-image: url("https://s3-eu-west-1.amazonaws.com/emojimosaic/emojifiedimages/mobile2.png");
+    background-size: 100%;
+    background-color: #cccccc;
+}
+div#loading {
+    width: 100%;
+    height: 100%;
+    display: none;
+    background: url(http://i.giphy.com/QUmpqPoJ886Iw.gif) ;
+    cursor: wait;
+    }
+</style>
+
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="assets/img/favicon.ico">
+    <link rel="icon" href="../assets/img/favicon.ico">
 
     <title>BlackTie.co - Sumo Lading</title>
 
@@ -53,7 +71,13 @@
     </div><!-- /H -->
 
 
-
+    <div id="loading">
+      <div class="container">
+        <div class="row centered">
+          <h2>{{brand}}</h2>
+        </div><!--/row-->
+      </div><!--/container-->
+    </div><!--/F-->
 
     <div id="f">
       <div class="container">
