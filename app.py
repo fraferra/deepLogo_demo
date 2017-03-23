@@ -30,10 +30,10 @@ def upload_file():
         print text
         if len(text) > 4:
         #brand = text
-	        brand = dl.predict(text)
-	        brand = brand2img(brand)
-	    else:
-	    	brand = "https://www.shareicon.net/data/256x256/2015/10/02/110418_question_512x512.png"
+            brand = dl.predict(text)
+            brand = brand2img(brand)
+        else:
+            brand = "https://www.shareicon.net/data/256x256/2015/10/02/110418_question_512x512.png"
 
     return render_template('index.html', brand=brand)
 
