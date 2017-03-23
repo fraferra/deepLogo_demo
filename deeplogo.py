@@ -3,7 +3,7 @@ from keras.layers.core import Flatten, Dense, Dropout
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
 from keras.layers.wrappers import TimeDistributed
 from keras.layers.recurrent import SimpleRNN, LSTM, GRU
-from keras.layers.core import Dense, Activation, Dropout, Reshape, Flatten
+from keras.layers.core import Dense, Activation, Dropout, Reshape, Flatten, Lambda
 from keras.models import Model
 from keras.layers import Input
 from keras.applications.vgg19 import VGG19
@@ -35,7 +35,7 @@ import sys
 import glob
 from pytube import YouTube
 import pytube
-max_frames = 15
+max_frames = 10
 number_of_brands = 6
 
 
@@ -57,9 +57,10 @@ def getModel2( output_dim ):
     x = Dense(1024, activation='relu')(x)
     
     predictions = Dense(output_dim ,activation='softmax')(x)
-
+    #predictions = Lambda(lambda x:x/1.5)(predictions)
 # this is the model we will train
     model = Model(input=vgg_model.input, output=predictions)
+    #model.add(Lambda(lambda x: x / 2.0))
 
     #Freeze all layers of VGG16 and Compile the model
     #Confirm the model is appropriate
@@ -69,6 +70,7 @@ def getModel2( output_dim ):
 def load_model(weights_path, output_dim):
 
     model = getModel2( output_dim ) 
+
     for k,layer in model.layers_by_depth.items()[:]:
         layer[0].trainable = False
 #     for layer in model.layers:
@@ -128,8 +130,8 @@ def load_rnn_model(weights, cnn):
 
 class DeepLogo():
     def __init__(self):
-        self.trained_model = load_model("weights-improvement-VGG16-LOGO6-07-0.9922.hdf5", 6)
-        self.rnn_model = load_rnn_model("RNN2-02-0.5091.hdf5", self.trained_model)
+        self.trained_model = load_model("weights-improvement-VGG16-LOGO6-02-0.9805.hdf5", 6)
+        self.rnn_model = load_rnn_model("RNN2-05-0.5000.hdf5", self.trained_model)
         
 
     def predict(self, url):
@@ -154,7 +156,7 @@ class DeepLogo():
         outputpath= "tmp/tmp_1_1/"
 
         outputfile = outputpath + "f"
-        cmd2='ffmpeg -i '+filename+' -r 1 -s 224x224 ' + outputfile + '_%04d.jpg'
+        cmd2='ffmpeg -i '+filename+' -r 2 -s 224x224 ' + outputfile + '_%04d.jpg'
         sp.call(cmd2,shell=True)
         sys.stdout.write("Saved it at " + outputfile +"\n")
         
@@ -175,6 +177,7 @@ class DeepLogo():
         print b1
         avgs = []
         for i in range(0, len(softmaxes)-max_frames ):
+            #avgs.append(softmaxes[i])
             avgs.append(softmaxes[i:i+max_frames].mean(axis=0))
 
         avgs = np.array(avgs)
@@ -190,11 +193,14 @@ class DeepLogo():
             sequences.append(imgs[top_f:top_f+max_frames])
 
         sequences = np.array(sequences)
+        #return sequences,softmaxes,imgs,frames
+        print sequences.shape
         print "predicting RNN..."
         ps = self.rnn_model.predict(sequences)
+        
         b2 = get_brand_2(ps)
         if b1 == b2:
             brand =  b1
         else:
             brand = "Noise"
-        return b2.upper()
+        return b2
