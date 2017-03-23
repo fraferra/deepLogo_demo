@@ -36,7 +36,7 @@ import glob
 from pytube import YouTube
 import pytube
 max_frames = 10
-number_of_brands = 6
+number_of_brands = 5
 
 
 def getModel2( output_dim ):
@@ -83,7 +83,9 @@ def load_model(weights_path, output_dim):
     return model
 
 
-labels_dict = {'apple': 2, 'cocacola': 0, 'nike': 4, 'pepsi': 1, 'starbucks': 3, "noise":5}
+#labels_dict = {'apple': 2, 'cocacola': 0, 'nike': 4, 'pepsi': 1, 'starbucks': 3, "noise":5}
+labels_dict = {'apple': 2, 'cocacola': 0, 'nike': 3, 'pepsi': 1, "noise":4}
+
 reversed_dict = dict([(x[1],x[0]) for x in labels_dict.items()])
 
 def get_brand(softmaxes):
@@ -98,9 +100,17 @@ def get_brand(softmaxes):
 
 
 def get_brand_2(results):
-    v = np.argmax(results)/ number_of_brands
+    v1 = np.argmax(results)% number_of_brands
+    v2 = np.argmax(results.mean(axis=0))
     print np.max(results)
-    return reversed_dict[v]
+    if v1 == v2:
+        return reversed_dict[v1]
+    if v1 == 4 and v2 != 4:
+        return reversed_dict[v2]
+    if v1 !=4 and v2 ==4:
+        return reversed_dict[v1]
+    if v1==4 and v2==4:
+        return reversed_dict[v1]
 
 
 def load_rnn_model(weights, cnn):
@@ -116,7 +126,7 @@ def load_rnn_model(weights, cnn):
 #     model_rnn3.compile(optimizer='adam', loss='categorical_crossentropy',metrics=['accuracy', 'categorical_crossentropy'])
 
 
-    model_rnn3.add(GRU(output_dim=200,return_sequences=True))
+    #model_rnn3.add(GRU(output_dim=200,return_sequences=True))
     model_rnn3.add(GRU(output_dim=100,return_sequences=True))
     model_rnn3.add(GRU(output_dim=50,return_sequences=False))
     model_rnn3.add(Dropout(.2))
@@ -130,8 +140,8 @@ def load_rnn_model(weights, cnn):
 
 class DeepLogo():
     def __init__(self):
-        self.trained_model = load_model("weights-improvement-VGG16-LOGO6-02-0.9805.hdf5", 6)
-        self.rnn_model = load_rnn_model("RNN2-05-0.5000.hdf5", self.trained_model)
+        self.trained_model = load_model("weights-improvement-VGG16-LOGO6-01-0.9822.hdf5", 5)
+        self.rnn_model = load_rnn_model("RNN2-07-0.4483.hdf5", self.trained_model)
         
 
     def predict(self, url):
@@ -156,11 +166,11 @@ class DeepLogo():
         outputpath= "tmp/tmp_1_1/"
 
         outputfile = outputpath + "f"
-        cmd2='ffmpeg -i '+filename+' -r 2 -s 224x224 ' + outputfile + '_%04d.jpg'
+        cmd2='ffmpeg -i '+filename+' -r 1 -s 224x224 ' + outputfile + '_%04d.jpg'
         sp.call(cmd2,shell=True)
         sys.stdout.write("Saved it at " + outputfile +"\n")
         
-        frames = sorted(glob.glob("tmp/tmp_1_1/*"))
+        frames = sorted(glob.glob("tmp/tmp_1_1/*"))[:-15]
         x_mean = 0.39533365588770686
         
         imgs = []
