@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../assets/img/favicon.ico">
+    <link rel="icon" href="assets/img/favicon.ico">
 
     <title>BlackTie.co - Sumo Lading</title>
 
@@ -60,6 +60,9 @@
                 <input type="text" name="text" class="subscribe-input" placeholder="Enter a Youtube URL here..." required>
                 <button  value="Send" class='btn btn-conf btn-green' name="my-form" type="submit">Sart your free trial</button>
               </form>
+              <div id="loading">
+              <h1>BRAND: {{brand}}</h1>
+              </div>
             </div><!--/mt-->
           </div>
         </div><!--/row-->
@@ -67,13 +70,18 @@
     </div><!-- /H -->
 
 
-    <div id="loading">
+    <div id="g">
+
       <div class="container">
-        <div class="row centered">
-          <h2>{{brand}}</h2>
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2 centered" id="loading">
+            <h1>BRAND: {{brand}}</h1>
+          </div>
         </div><!--/row-->
       </div><!--/container-->
-    </div><!--/F-->
+    </div><!-- /H -->
+
+
 
     <div id="f">
       <div class="container">
