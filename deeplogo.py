@@ -211,9 +211,11 @@ class DeepLogo():
         
         for i in range(len(top_idxs)):
             if i == 4:
-                ps[:,i] = ps[:,i]*0.5
+                ps[:,i] = ps[:,i]*0.2
+                ps[i,:] = ps[i,:]*0.2
             else:
                 ps[:,i] = ps[:,i]*math.sqrt(avgs[top_idxs[i], i])
+                ps[i,:] = ps[i,]*math.sqrt(avgs[top_idxs[i], i])
             print i, avgs[top_idxs[i], i],top_idxs[i] 
 
         b2 = get_brand_2(ps)
