@@ -1,20 +1,25 @@
 from flask import Flask
 from flask import request
 from flask import render_template
-
+from deeplogo import DeepLogo
 app = Flask(__name__)
 
-@app.route('/')
-def my_form():
-    return render_template("my-form.html")
+dl = DeepLogo()
 
-@app.route('/', methods=['POST'])
-def my_form_post():
+@app.route('/', methods=['GET', 'POST'])
+def upload_file():
+    brand = "NOT CLASSIFIED YET"
+    if request.method == 'POST':
+        text = request.form['text']
+        brand = dl.predict(text)
 
-    text = request.form['text']
-    processed_text = text.upper()
-    return processed_text
+    return render_template('index.html', brand=brand)
+
 
 if __name__ == '__main__':
     app.run()
+
+
+
+
 
