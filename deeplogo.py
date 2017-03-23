@@ -223,4 +223,4 @@ class DeepLogo():
             brand =  b1
         else:
             brand = "Noise"
-        return b2.upper()
+        return b2

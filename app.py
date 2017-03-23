@@ -10,6 +10,18 @@ app = Flask(__name__,  static_folder=ASSETS_DIR)
 
 dl = DeepLogo()
 
+def brand2img(brand):
+	if brand == "noise":
+		return "http://www.selonen.org/arto/netbsd/noise.png"
+	if brand == "nike":
+		return "http://www.myiconfinder.com/uploads/iconsets/256-256-15f5c0bd367d23e4ed1a1fc800bc2ed6-nike.png"
+	if brand == "cocacola":
+		return "http://www.iconsdb.com/icons/preview/red/coca-cola-xxl.png"
+	if brand == "pepsi":
+		return "http://www.myiconfinder.com/uploads/iconsets/256-256-756be8a5c69426cc2552448b6b60fb75-Pepsi.png"
+	if brand == "apple":
+		return "http://dxf1.com/images/jdownloads/screenshots/apple.png"
+
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
     brand = "NOT CLASSIFIED YET"
@@ -17,6 +29,7 @@ def upload_file():
         text = request.form['text']
         #brand = text
         brand = dl.predict(text)
+        brand = brand2img(brand)
 
     return render_template('index.html', brand=brand)
 
