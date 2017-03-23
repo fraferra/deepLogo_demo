@@ -33,6 +33,7 @@ import random
 import subprocess as sp
 import sys
 import glob
+import math
 from pytube import YouTube
 import pytube
 max_frames = 10
@@ -170,7 +171,7 @@ class DeepLogo():
         sp.call(cmd2,shell=True)
         sys.stdout.write("Saved it at " + outputfile +"\n")
         
-        frames = sorted(glob.glob("tmp/tmp_1_1/*"))[5:-5]
+        frames = sorted(glob.glob("tmp/tmp_1_1/*"))[3:-10]
         x_mean = 0.39533365588770686
         
         imgs = []
@@ -208,6 +209,13 @@ class DeepLogo():
         print "predicting RNN..."
         ps = self.rnn_model.predict(sequences)
         
+        for i in range(len(top_idxs)):
+            if i == 4:
+                ps[:,i] = ps[:,i]*0.5
+            else:
+                ps[:,i] = ps[:,i]*math.sqrt(avgs[top_idxs[i], i])
+            print i, avgs[top_idxs[i], i],top_idxs[i] 
+
         b2 = get_brand_2(ps)
         if b1 == b2:
             brand =  b1
