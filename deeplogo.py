@@ -170,7 +170,7 @@ class DeepLogo():
         sp.call(cmd2,shell=True)
         sys.stdout.write("Saved it at " + outputfile +"\n")
         
-        frames = sorted(glob.glob("tmp/tmp_1_1/*"))[:-15]
+        frames = sorted(glob.glob("tmp/tmp_1_1/*"))[10:-10]
         x_mean = 0.39533365588770686
         
         imgs = []
@@ -179,7 +179,7 @@ class DeepLogo():
             imgs.append(img)
 
         imgs = np.array(imgs)
-        imgs = imgs - imgs.mean()
+        imgs = imgs - x_mean#imgs.mean()
 
         print "predicting CNN..."
         softmaxes = self.trained_model.predict(imgs)
@@ -213,4 +213,4 @@ class DeepLogo():
             brand =  b1
         else:
             brand = "Noise"
-        return b2
+        return b2.upper()
