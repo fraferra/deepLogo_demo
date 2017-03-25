@@ -80,7 +80,7 @@
 
               <div id="content" class="col-md-8 col-md-offset-2 centered">
                 <div id="progress"></div>
-                <h1>Brand: </h1><img src="{{brand}}">
+                <h1>Brand: </h1><img id="my_image" src="{{brand}}">
               </div>
         </div>
       </div><!--/container-->
@@ -177,6 +177,7 @@
                 if (data['state'] != 'PENDING' && data['state'] != 'PROGRESS') {
                     if ('result' in data) {
                         // show result
+                        $('#my_image').attr('src',data['result']);
                         $(status_div.childNodes[3]).text('Result: ' + data['result']);
                     }
                     else {
