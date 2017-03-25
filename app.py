@@ -8,7 +8,7 @@ from celery import Celery
 #from tasks import predict
 ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/assets')
 
-
+text = ''
 app = Flask(__name__,  static_folder=ASSETS_DIR)
 
 
@@ -18,33 +18,26 @@ app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
 
 
 # Initialize extensions
+dl = DeepLogo()
 
 # Initialize Celery
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], backend=app.config['CELERY_RESULT_BACKEND'])
 celery.conf.update(app.config)
 
 
-dl = DeepLogo()
 
-def brand2img(brand):
-	if brand == "noise":
-		return "http://www.selonen.org/arto/netbsd/noise.png"
-	if brand == "nike":
-		return "http://www.myiconfinder.com/uploads/iconsets/256-256-15f5c0bd367d23e4ed1a1fc800bc2ed6-nike.png"
-	if brand == "cocacola":
-		return "https://www.etu.edu.tr/files/sirket/2016/10/03/0975fc015fa2575a06d1216e2989f6c5.png"
-	if brand == "pepsi":
-		return "http://www.myiconfinder.com/uploads/iconsets/256-256-756be8a5c69426cc2552448b6b60fb75-Pepsi.png"
-	if brand == "apple":
-		return "http://dxf1.com/images/jdownloads/screenshots/apple.png"
+
 
 @celery.task(bind=True)
-def predict(self, url):
+def long_task(self, url):
+
+	print("###### URL ##### : "+ url)
 
 	self.update_state(state="PROGRESS", 
 					  meta={"current":10, 
 					  		"total":100, 
 					  		"status":"Dowloading video"})
+	print('DOWNLOADING VIDEO')
 	frames = dl.downloading_video(url)
 
 	self.update_state(state="PROGRESS", 
@@ -55,14 +48,14 @@ def predict(self, url):
 	imgs = dl.create_imgs(frames)
 
 	self.update_state(state="PROGRESS", 
-					  meta={"current":60, 
+					  meta={"current":30, 
 					  		"total":100, 
 					  		"status":"Using CNN to classify frames"})
 
 	softmaxes = dl.classify_CNN(imgs)
 
 	self.update_state(state="PROGRESS", 
-					  meta={"current":60, 
+					  meta={"current":80, 
 					  		"total":100, 
 					  		"status":"Using RNN to classify video"})
 
@@ -72,30 +65,47 @@ def predict(self, url):
 
 
 @app.route('/', methods=['GET', 'POST'])
-def upload_file():
+def index():
     brand = "https://www.shareicon.net/data/256x256/2015/10/02/110418_question_512x512.png"
 
-    if request.method == 'POST':
-        text = request.form['text']
-        print(text)
+    if request.method == 'GET':
+        return render_template('index.html', brand=brand)
+
+#     if request.method == 'POST':
+#         text = request.form['text']
+#         print(text)
 
 
-        #brand = text
-        task = predict.apply_async(args=[text])
-        return jsonify({}), 202, {'Location': url_for('taskstatus',
-                                                  task_id=task.id)}
+#         #brand = text
+# #        task = predict.apply_async(args=[text])
+#         long_task.delay(text)
+
+        # return jsonify({}), 202, {'Location': url_for('taskstatus',
+        #                                           task_id=task.id)}
 
             #brand = dl.predict(text)
             #brand = brand2img(brand)
         # else:
         #     brand = "https://www.shareicon.net/data/256x256/2015/10/02/110418_question_512x512.png"
 
-    return render_template('index.html', brand=brand)
+    #return render_template('index.html', brand=brand)
+    return redirect(url_for('index'))
+
+
+@app.route('/longtask', methods=['POST'])
+def longtask():
+    #url = request.args.post['text']
+    #print(request.post)
+    url = request.args.get('text', '')
+    print("CHECKING URL: "+url)
+    task = long_task.apply_async(args=[url])
+    return jsonify({}), 202, {'Location': url_for('taskstatus',
+                                                  task_id=task.id)}
 
 
 @app.route('/status/<task_id>')
 def taskstatus(task_id):
-    task = predict.AsyncResult(task_id)
+    task = long_task.AsyncResult(task_id)
     if task.state == 'PENDING':
         response = {
             'state': task.state,
@@ -125,7 +135,7 @@ def taskstatus(task_id):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
 
 
 

@@ -66,10 +66,9 @@
             <h1>Welcome to DeepLogo, a deep learning architecture for brands recognition<br/>
             </h1>
             <div class="mtb">
-              <form role="form" action="."  method="POST" enctype="plain"> 
-                <input style="color:black" type="text" name="text" class="subscribe-input" placeholder="Enter a Youtube URL here..." required>
-                <button  value="Send" class='btn btn-conf btn-green' name="my-form" type="submit">Get brand</button>
-              </form>
+                <input style="color:black"  id="url" type="text" name="url" class="subscribe-input" placeholder="Enter a Youtube URL here..." required>
+                <button id="start-bg-job" value="Send" class='btn btn-conf btn-green' name="my-form" type="submit">Get brand</button>
+             
 
 
             </div><!--/mt-->
@@ -79,13 +78,14 @@
         </div><!--/row-->
         <div class="row">
 
-              <div id="progress"></div>
               <div id="content" class="col-md-8 col-md-offset-2 centered">
                 <h1>Brand: </h1><img src="{{brand}}">
               </div>
         </div>
       </div><!--/container-->
     </div><!-- /H -->
+
+    <div id="progress"></div>
 
 
     <div id="green">
@@ -149,9 +149,11 @@
                 target: div[0].childNodes[0]
             });
             // send ajax POST request to start background job
+            var value = $('#url').val()
             $.ajax({
                 type: 'POST',
-                url: '/longtask',
+                url: '/longtask?text='+ value,
+                data: {"text":value},
                 success: function(data, status, request) {
                     status_url = request.getResponseHeader('Location');
                     update_progress(status_url, nanobar, div[0]);
