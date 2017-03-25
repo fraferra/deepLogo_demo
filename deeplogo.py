@@ -218,10 +218,7 @@ class DeepLogo():
                 ps[i,:] = ps[i,]*math.sqrt(avgs[top_idxs[i], i])
 
         b2 = get_brand_2(ps)
-        if b1 == b2:
-            brand =  b1
-        else:
-            brand = "Noise"
+
         return b2
 
 
