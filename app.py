@@ -58,7 +58,7 @@ def long_task(self, url):
 					  		"total":100, 
 					  		"status":"Using RNN to classify video"})
 
-	brand = dl.brand2img(dl.classify_RNN(softmaxes))
+	brand = dl.brand2img(dl.classify_RNN(softmaxes, imgs))
 
 	return {"current":100, "total":100, "status":"task completed", "result":brand}
 

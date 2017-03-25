@@ -185,7 +185,7 @@ class DeepLogo():
         print("predicting CNN...")
         return self.trained_model.predict(imgs)
 
-    def classify_RNN(self, softmaxes):
+    def classify_RNN(self, softmaxes, imgs):
         avgs = []
         for i in range(0, len(softmaxes)-max_frames ):
             #avgs.append(softmaxes[i])
