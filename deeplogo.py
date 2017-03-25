@@ -72,7 +72,7 @@ def load_model(weights_path, output_dim):
 
     model = getModel2( output_dim ) 
 
-    for k,layer in model.layers_by_depth.items()[:]:
+    for k,layer in list(model.layers_by_depth.items())[:]:
         layer[0].trainable = False
 #     for layer in model.layers:
 #         layer.trainable = False
@@ -87,14 +87,12 @@ def load_model(weights_path, output_dim):
 #labels_dict = {'apple': 2, 'cocacola': 0, 'nike': 4, 'pepsi': 1, 'starbucks': 3, "noise":5}
 labels_dict = {'apple': 2, 'cocacola': 0, 'nike': 3, 'pepsi': 1, "noise":4}
 
-reversed_dict = dict([(x[1],x[0]) for x in labels_dict.items()])
+reversed_dict = dict([(x[1],x[0]) for x in list(labels_dict.items())])
 
 def get_brand(softmaxes):
     v = np.max(softmaxes.mean(axis=0))
     
-    print v
-    
-    print reversed_dict[np.argmax(softmaxes.mean(axis=0))]
+    print(reversed_dict[np.argmax(softmaxes.mean(axis=0))])
     if v > 0.6:
         return reversed_dict[np.argmax(softmaxes.mean(axis=0))]
     return "Noise"
@@ -103,7 +101,6 @@ def get_brand(softmaxes):
 def get_brand_2(results):
     v1 = np.argmax(results)% number_of_brands
     v2 = np.argmax(results.mean(axis=0))
-    print np.max(results)
     if v1 == v2:
         return reversed_dict[v1]
     elif v1 == 4 and v2 != 4:
@@ -143,9 +140,8 @@ class DeepLogo():
     def __init__(self):
         self.trained_model = load_model("weights-improvement-VGG16-LOGO6-01-0.9822.hdf5", 5)
         self.rnn_model = load_rnn_model("RNN2-07-0.4483.hdf5", self.trained_model)
-        
-
-    def predict(self, url):
+       
+    def downloading_video(self, url):
         yt = YouTube(url)
         try:
             video = yt.get('mp4')
@@ -172,8 +168,9 @@ class DeepLogo():
         sys.stdout.write("Saved it at " + outputfile +"\n")
         
         frames = sorted(glob.glob("tmp/tmp_1_1/*"))[3:-10]
-        x_mean = 0.39533365588770686
-        
+        return frames
+
+    def create_imgs(self,frames):
         imgs = []
         for frame in frames:
             img = np.asarray(Image.open(frame))/255.
@@ -181,11 +178,12 @@ class DeepLogo():
 
         imgs = np.array(imgs)
         imgs = imgs - x_mean#imgs.mean()
+        return imgs
 
-        print "predicting CNN..."
-        softmaxes = self.trained_model.predict(imgs)
-        b1 =  get_brand(softmaxes)
-        print b1
+    def classify_CNN(self, imgs):
+        return self.trained_model.predict(imgs)
+
+    def classify_RNN(self, softmaxes):
         avgs = []
         for i in range(0, len(softmaxes)-max_frames ):
             #avgs.append(softmaxes[i])
@@ -197,7 +195,7 @@ class DeepLogo():
             #print np.argmax(avgs[:,i])
             top_idxs.append(np.argmax(avgs[:,i]))
 
-        print top_idxs
+        print(top_idxs)
         sequences = []
 
         for top_f in top_idxs:
@@ -205,8 +203,8 @@ class DeepLogo():
 
         sequences = np.array(sequences)
         #return sequences,softmaxes,imgs,frames
-        print sequences.shape
-        print "predicting RNN..."
+        print(sequences.shape)
+        print("predicting RNN...")
         ps = self.rnn_model.predict(sequences)
         
         for i in range(len(top_idxs)):
@@ -216,7 +214,6 @@ class DeepLogo():
             else:
                 ps[:,i] = ps[:,i]*math.sqrt(avgs[top_idxs[i], i])
                 ps[i,:] = ps[i,]*math.sqrt(avgs[top_idxs[i], i])
-            print i, avgs[top_idxs[i], i],top_idxs[i] 
 
         b2 = get_brand_2(ps)
         if b1 == b2:
