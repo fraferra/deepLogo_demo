@@ -80,6 +80,7 @@
 
               <div id="content" class="col-md-8 col-md-offset-2 centered">
                 <div id="progress"></div>
+                <p style="color:white" id="status">Not started ...</p>
                 <h1>Brand: </h1><img id="my_image" src="{{brand}}">
               </div>
         </div>
@@ -123,15 +124,10 @@
       <div class="container">
         <div class="row centered">
           <h2>You Can Contact Us</h2>
-          <h5>INFO@DEEPLOGO.COM</h5>
+          <h5>FFERRARI@ENG.UCSD.EDU</h5>
 
           <p class="mt">
-            <a href="#"><i class="ion-social-twitter"></i></a>
-            <a href="#"><i class="ion-social-dribbble"></i></a>
-            <a href="#"><i class="ion-social-instagram"></i></a>
-            <a href="#"><i class="ion-social-facebook"></i></a>
-            <a href="#"><i class="ion-social-pinterest"></i></a>
-            <a href="#"><i class="ion-social-tumblr"></i></a>
+          paper available <a href="assets/img/deeplogo_paper.pdf">here</a>
           </p>
           <h6 class="mt">COPYRIGHT 2017 - DEEPLOGO</h6>
         </div><!--/row-->
@@ -173,7 +169,7 @@
                 percent = parseInt(data['current'] * 100 / data['total']);
                 nanobar.go(percent);
                 $(status_div.childNodes[1]).text(percent + '%');
-                $(status_div.childNodes[2]).text(data['status']);
+                $('#status').text(data['status'])
                 if (data['state'] != 'PENDING' && data['state'] != 'PROGRESS') {
                     if ('result' in data) {
                         // show result
