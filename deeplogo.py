@@ -211,8 +211,8 @@ class DeepLogo():
         
         for i in range(len(top_idxs)):
             if i == 4:
-                ps[:,i] = ps[:,i]*0.3
-                ps[i,:] = ps[i,:]*0.3
+                ps[:,i] = ps[:,i]*0.2
+                ps[i,:] = ps[i,:]*0.2
             else:
                 ps[:,i] = ps[:,i]*math.sqrt(avgs[top_idxs[i], i])
                 ps[i,:] = ps[i,]*math.sqrt(avgs[top_idxs[i], i])
