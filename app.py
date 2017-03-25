@@ -18,7 +18,7 @@ app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
 
 
 # Initialize extensions
-dl = DeepLogo()
+#dl = DeepLogo()
 
 # Initialize Celery
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], backend=app.config['CELERY_RESULT_BACKEND'])
@@ -30,6 +30,8 @@ celery.conf.update(app.config)
 
 @celery.task(bind=True)
 def long_task(self, url):
+
+	dl = DeepLogo()
 
 	print("###### URL ##### : "+ url)
 
