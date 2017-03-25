@@ -177,7 +177,7 @@ class DeepLogo():
             imgs.append(img)
 
         imgs = np.array(imgs)
-        imgs = imgs - x_mean#imgs.mean()
+        imgs = imgs - imgs.mean()
         return imgs
 
     def classify_CNN(self, imgs):
