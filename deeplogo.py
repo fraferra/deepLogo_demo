@@ -194,6 +194,7 @@ class DeepLogo():
         return imgs
 
     def classify_CNN(self, imgs):
+        print("predicting CNN...")
         return self.trained_model.predict(imgs)
 
     def classify_RNN(self, softmaxes):
