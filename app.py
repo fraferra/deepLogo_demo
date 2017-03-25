@@ -25,6 +25,17 @@ celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], backend=app.co
 celery.conf.update(app.config)
 
 
+def brand2img(brand):
+    if brand == "noise":
+        return "http://www.selonen.org/arto/netbsd/noise.png"
+    if brand == "nike":
+        return "http://www.myiconfinder.com/uploads/iconsets/256-256-15f5c0bd367d23e4ed1a1fc800bc2ed6-nike.png"
+    if brand == "cocacola":
+        return "https://www.etu.edu.tr/files/sirket/2016/10/03/0975fc015fa2575a06d1216e2989f6c5.png"
+    if brand == "pepsi":
+        return "http://www.myiconfinder.com/uploads/iconsets/256-256-756be8a5c69426cc2552448b6b60fb75-Pepsi.png"
+    if brand == "apple":
+        return "http://dxf1.com/images/jdownloads/screenshots/apple.png"
 
 
 
