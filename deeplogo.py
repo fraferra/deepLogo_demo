@@ -138,12 +138,16 @@ def load_rnn_model(weights, cnn):
     return model_rnn3
 
 class DeepLogo():
-    def __init__(self):
-        self.trained_model = load_model("weights-improvement-VGG16-LOGO6-01-0.9822.hdf5", 5)
+    def __init__(self, output_dim = 7):
+        self.trained_model = load_model("weights-improvement-VGG16-LOGO6-01-0.9822.hdf5", output_dim)
         self.rnn_model = load_rnn_model("RNN2-07-0.4483.hdf5", self.trained_model)
+        self.output_dim = output_dim
        
     def downloading_video(self, url):
         yt = YouTube(url)
+
+        duration = min(int(yt.get_video_data()["args"]["length_seconds"]),120)
+
         try:
             video = yt.get('mp4')
         except pytube.exceptions.MultipleObjectsReturned:
@@ -167,8 +171,8 @@ class DeepLogo():
         cmd2='ffmpeg -i '+filename+' -r 1 -s 224x224 ' + outputfile + '_%04d.jpg'
         sp.call(cmd2,shell=True)
         sys.stdout.write("Saved it at " + outputfile +"\n")
-        
-        frames = sorted(glob.glob("tmp/tmp_1_1/*"))[3:-10]
+
+        frames = sorted(glob.glob("tmp/tmp_1_1/*"))[:duration]
         return frames
 
     def create_imgs(self,frames):
@@ -178,7 +182,7 @@ class DeepLogo():
             imgs.append(img)
 
         imgs = np.array(imgs)
-        x_mean = 0.39533365588770686
+        x_mean = 0.44021639613396374
         imgs = imgs - x_mean#imgs.mean()
         return imgs
 
@@ -211,7 +215,7 @@ class DeepLogo():
         ps = self.rnn_model.predict(sequences)
         
         for i in range(len(top_idxs)):
-            if i == 4:
+            if i == self.output_dim - 1:
                 ps[:,i] = ps[:,i]*0.2
                 ps[i,:] = ps[i,:]*0.2
             else:
